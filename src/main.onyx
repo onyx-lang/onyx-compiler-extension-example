@@ -1,5 +1,3 @@
-#load "lib/packages"
-
 use core {println}
 
 Extension :: #compiler_extension "./extension.onyx" {
