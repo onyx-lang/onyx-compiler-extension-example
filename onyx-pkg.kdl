@@ -1,0 +1,20 @@
+package {
+    name "compext" 
+    author "" 
+    url "" 
+    description "" 
+    version "0.0.1" 
+}
+
+config {
+    dependency_source_path "./lib" 
+    dependency_binary_path "./bin" 
+}
+
+lsp {
+    mode "project" 
+    source_files "src/main.onyx" 
+    include_dirs "" 
+    working_dir "." 
+}
+

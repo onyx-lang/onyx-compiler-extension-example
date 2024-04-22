@@ -1,0 +1,22 @@
+#load "lib/packages"
+
+use core {println}
+
+Extension :: #compiler_extension "./extension.onyx" {
+    double, define_func
+}
+
+Extension.define_func!{
+    foo
+    bar
+    qux
+    dog
+}
+
+main :: () {
+    dog()
+
+    println(Extension.double!{
+        12345
+    })
+}

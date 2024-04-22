@@ -1,0 +1,70 @@
+#load "core/onyx/compiler_extension"
+
+use onyx.compiler_extension {*}
+use core.conv
+use core {eprintf, tprintf, Result}
+
+main :: () {
+    ext := ExtensionContext.make("My First Extension")
+
+    // Shorthand way of handling a macro expansion request
+    ext->handle_macro("define_func", handle_define_func)
+
+    ext->start(message_handler)
+}
+
+handle_define_func :: (
+    ext: &ExtensionContext,
+    em: ExpansionInfo
+) -> Result(str, ExpansionFailureReason) {
+    em.body->strip_whitespace()
+
+    code: dyn_str
+
+    for line in em.body->split_iter("\n") {
+        line->strip_whitespace()
+
+        code->append(line)
+        code->append(" :: () { println(\"Hello from ")
+        code->append(line)
+        code->append("\") }\n");
+    }
+
+    return .{ Ok = code }
+}
+
+message_handler :: (ext, msg) => {
+    // Print debugging an extensions requires you to print
+    // to standard error, so you have to use 'eprintf'
+    eprintf("Message: {p}\n", msg)
+
+    switch msg {
+        case .ExpandMacro as em {
+            if em.macro_name == "double" {
+                em.body->strip_whitespace()
+                ext->send(.{
+                    Expansion = .{
+                        id = em.id,
+                        code = .{
+                            Ok = tprintf("2 * ({})", em.body)
+                        }
+                    }
+                })
+
+                break
+            }
+
+            // Every macro expansion needs a response, even if it
+            // is not supported, otherwise the compiler will hang.
+            ext->send(.{
+                Expansion = .{
+                    id = em.id,
+                    code = .{ Err = .NotSupported }
+                }
+            })
+        }
+
+        case _ {}
+    }
+}
+
