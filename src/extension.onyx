@@ -34,7 +34,7 @@ handle_define_func :: (
 }
 
 message_handler :: (ext, msg) => {
-    // Print debugging an extensions requires you to print
+    // Print debugging in compiler extensions requires you to print
     // to standard error, so you have to use 'eprintf'
     eprintf("Message: {p}\n", msg)
 
@@ -67,4 +67,3 @@ message_handler :: (ext, msg) => {
         case _ {}
     }
 }
-
