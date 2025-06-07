@@ -1,4 +1,4 @@
-#load "core/onyx/compiler_extension"
+#load "core:onyx/compiler_extension"
 
 use onyx.compiler_extension {*}
 use core.conv
